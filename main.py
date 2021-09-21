@@ -18,6 +18,10 @@ sp = spotipy.Spotify(
 
 song_data = pd.DataFrame([], columns=["Track Name", "Album", "Artist"])
 
+#print(sp.user(sp.current_user()['display_name']))
+
+print(sp.current_user())
+
 playlists = sp.current_user_playlists()
 
 while playlists:
@@ -53,16 +57,20 @@ song_count = 0
 while liked_songs:
 
     for song in liked_songs['items']:
-        song_count = song_count + 1
-        if song_data.empty:
+       song_count = song_count+1
+       print(song['track']['name'])
+       if song_data.empty:
+
             song_data.loc[0] = [song['track']['name'], song['track']['album']['name'],
                                 song['track']['artists'][0]['name']]
-        else:
+       else:
             song_data.loc[song_data.index[-1] + 1] = [song['track']['name'], song['track']['album']['name'],
-                                                      song['track']['artists'][0]['name']]
-    if song_count == 50:
+                                                     song['track']['artists'][0]['name']]
+    if song_count % 50 == 0:
+
         liked_songs = sp.current_user_saved_tracks(limit=50, offset=song_count)
     else:
+
         liked_songs = None
 
 album_count = 0
@@ -76,9 +84,9 @@ while saved_albums:
             album_data.loc[0] = [album['album']['name'], album['album']['artists'][0]['name']]
         else:
             album_data.loc[album_data.index[-1] + 1] = [album['album']['name'], album['album']['artists'][0]['name']]
-    if album_count == 50:
+    if album_count % 50 == 0:
+        print(album_count)
         saved_albums = sp.current_user_saved_albums(limit=50, offset=album_count)
-        album_count = 0
     else:
         saved_albums = None
 print("Done!")
